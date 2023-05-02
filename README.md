@@ -58,7 +58,7 @@ module "vcd_nsxt_network_dhcp" {
   
   vdc_org_name              = "<US1-VDC-ORG-NAME>"
   vdc_group_name            = "<US1-VDC-GRP-NAME>"
-  vcd_edgegateway_name      = "<US1-VDC-EDGE-NAME>"
+  vdc_edge_name             = "<US1-VDC-EDGE-NAME>"
 
   dhcp_mode                 = "EDGE"
 

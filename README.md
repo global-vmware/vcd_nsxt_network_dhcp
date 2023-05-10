@@ -1,6 +1,6 @@
 ## DHCP Terraform Module for Routed Data Center Group Networks
 
-This Terraform module will deploy DHCP pools into existing Data Center Group Routed Networks using the `vmware/vcd` provider. This module can be used to provision DHCP Services on multiple routed network segments.
+This Terraform module will deploy DHCP Pools for Routed Data Center Group Networks into an existing VMware Cloud Director (VCD) Environment.  This module can be used to provsion new DHCP Pools into [Rackspace Technology SDDC Flex](https://www.rackspace.com/cloud/private/software-defined-data-center-flex) VCD Data Center Regions.
 
 ## Requirements
 

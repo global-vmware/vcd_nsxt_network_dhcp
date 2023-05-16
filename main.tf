@@ -1,10 +1,10 @@
 terraform {
-  required_version = ">= 1.2"
+  required_version = "~> 1.2"
 
   required_providers {
     vcd = {
       source  = "vmware/vcd"
-      version = ">= 3.8.2"
+      version = "~> 3.8"
     }
   }
 }

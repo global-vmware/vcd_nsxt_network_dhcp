@@ -1,10 +1,10 @@
 terraform {
-  required_version = "~> 1.2"
+  required_version = ">= 1.2"
 
   required_providers {
     vcd = {
       source  = "vmware/vcd"
-      version = "~> 3.8"
+      version = ">= 3.8.2"
     }
   }
 }
@@ -32,19 +32,21 @@ resource "vcd_nsxt_network_dhcp" "dhcp" {
   for_each             = var.segments
   org                  = var.vdc_org_name
   org_network_id       = data.vcd_network_routed_v2.network[each.key].id
-  mode                 = var.dhcp_mode
-  listener_ip_address  = var.dhcp_mode == "NETWORK" ? each.value.listener_ip_address : null
-  lease_time           = var.lease_time
-  dns_servers          = var.dhcp_mode == "RELAY" ? null : var.dns_servers
+  mode                 = each.value.dhcp_mode
+  listener_ip_address  = each.value.dhcp_mode == "NETWORK" ? each.value.listener_ip_address : null
+  lease_time           = each.value.lease_time
+  dns_servers          = each.value.dhcp_mode == "RELAY" ? null : each.value.dns_servers
   
   dynamic "pool" {
-    for_each = var.dhcp_mode == "RELAY" ? [] : each.value.pool_ranges
+    for_each = each.value.dhcp_mode == "RELAY" ? [] : each.value.pool_ranges
     content {
       start_address = pool.value.start_address
       end_address   = pool.value.end_address
     }
   }
 }
+
+
 
 
 

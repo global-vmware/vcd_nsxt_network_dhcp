@@ -6,20 +6,10 @@ output "dhcp_pools" {
           start_address = pool.start_address
           end_address = pool.end_address
         }
-      ]
+      ],
+      dns_servers = segment.dns_servers,
+      dhcp_mode   = segment.dhcp_mode
+      listener_ip_address = segment.listener_ip_address
     }
   }
-}
-
-output "dhcp_dns_servers" {
-  value = var.dhcp_mode == "RELAY" ? null : var.dns_servers
-}
-
-output "dhcp_listener_ips" {
-  value = { for segment, dhcp in vcd_nsxt_network_dhcp.dhcp : segment => dhcp.listener_ip_address if var.dhcp_mode == "NETWORK" }
-}
-
-
-output "dhcp_mode" {
-  value = var.dhcp_mode
 }

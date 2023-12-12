@@ -37,7 +37,7 @@ This Terraform module deploys NSX-T DHCP Pools into an existing VMware Cloud Dir
 
 ```terraform
 module "vcd_nsxt_network_dhcp" {
-  source = "github.com/global-vmware/vcd_nsxt_network_dhcp.git?ref=v2.0.0"
+  source = "github.com/global-vmware/vcd_nsxt_network_dhcp.git?ref=v2.0.1"
 
   vdc_org_name   = "<VDC-ORG-NAME>"
   vdc_group_name = "<VDC-GRP-NAME>"

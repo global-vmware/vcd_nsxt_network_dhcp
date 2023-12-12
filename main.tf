@@ -11,6 +11,7 @@ terraform {
 
 # Create the Datacenter Group data source
 data "vcd_vdc_group" "dcgroup" {
+  org             = var.vdc_org_name
   name            = var.vdc_group_name
 }
 
@@ -23,8 +24,8 @@ data "vcd_nsxt_edgegateway" "t1" {
 
 data "vcd_network_routed_v2" "network" {
   for_each        = var.segments
-  name            = each.key
   org             = var.vdc_org_name
+  name            = each.key
   edge_gateway_id = data.vcd_nsxt_edgegateway.t1.id
 }
 

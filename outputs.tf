@@ -1,15 +1,17 @@
 output "dhcp_pools" {
   value = {
     for segment_key, segment in var.segments : segment_key => {
+      id                  = vcd_nsxt_network_dhcp.dhcp[segment_key].id
+      mode                = vcd_nsxt_network_dhcp.dhcp[segment_key].mode
+      dns_servers         = vcd_nsxt_network_dhcp.dhcp[segment_key].dns_servers
+      listener_ip_address = vcd_nsxt_network_dhcp.dhcp[segment_key].listener_ip_address
+      lease_time          = vcd_nsxt_network_dhcp.dhcp[segment_key].lease_time
       pools = [
-        for pool in segment.pool_ranges : {
-          start_address = pool.start_address
-          end_address = pool.end_address
+        for p in vcd_nsxt_network_dhcp.dhcp[segment_key].pool : {
+          start_address = p.start_address
+          end_address   = p.end_address
         }
-      ],
-      dns_servers = segment.dns_servers,
-      dhcp_mode   = segment.dhcp_mode
-      listener_ip_address = segment.listener_ip_address
+      ]
     }
   }
 }

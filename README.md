@@ -1,6 +1,6 @@
-# VCD NSX-T DHCP Terraform Module
+# VCD NSX-T Routed Network DHCP Terraform Module
 
-This Terraform module deploys NSX-T DHCP Pools into an existing VMware Cloud Director (VCD) environment. This module can be used to provision new NSX-T DHCP Pools into [Rackspace Technology SDDC Flex](https://www.rackspace.com/cloud/private/software-defined-data-center-flex) VCD Data Center Regions.
+This Terraform module deploys NSX-T Routed Network DHCP Pools into an existing VMware Cloud Director (VCD) environment. This module can be used to provision new NSX-T DHCP Pools into [Rackspace Technology SDDC Flex](https://www.rackspace.com/cloud/private/software-defined-data-center-flex) VCD Data Center Regions.
 
 ## Requirements
 
@@ -53,6 +53,9 @@ module "vcd_nsxt_network_dhcp" {
 
   segments = {
     "Web-Network" = {
+      dhcp_mode   = "EDGE"
+      dns_servers = ["192.168.255.228"]
+      lease_time  = 2592000
       pool_ranges = [{
         start_address = "10.0.0.100"
         end_address   = "10.0.0.200"
@@ -72,7 +75,7 @@ module "vcd_nsxt_network_dhcp" {
   vdc_edge_name  = "<VDC-EDGE-NAME>"
 
   segments = {
-    "Isolated-Network" = {
+    "Web-Network" = {
       dhcp_mode           = "NETWORK"
       listener_ip_address = "10.1.0.10"
       pool_ranges = [{
@@ -90,8 +93,12 @@ module "vcd_nsxt_network_dhcp" {
   source = "github.com/global-vmware/vcd_nsxt_network_dhcp.git?ref=v2.1.0"
   # ... other variables ...
 
+  vdc_org_name   = "<VDC-ORG-NAME>"
+  vdc_group_name = "<VDC-GRP-NAME>"
+  vdc_edge_name  = "<VDC-EDGE-NAME>"
+
   segments = {
-    "Shared-Network" = {
+    "Web-Network" = {
       dhcp_mode = "RELAY"
       # listener_ip_address and pool_ranges MUST be omitted
     }

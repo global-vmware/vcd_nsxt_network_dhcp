@@ -84,6 +84,21 @@ module "vcd_nsxt_network_dhcp" {
 }
 ```
 
+### Relay Deployment (RELAY Mode)
+```terraform
+module "vcd_nsxt_network_dhcp" {
+  source = "github.com/global-vmware/vcd_nsxt_network_dhcp.git?ref=v2.1.0"
+  # ... other variables ...
+
+  segments = {
+    "Shared-Network" = {
+      dhcp_mode = "RELAY"
+      # listener_ip_address and pool_ranges MUST be omitted
+    }
+  }
+}
+```
+
 ## Authors
 
 This module is maintained by the [Global VMware Cloud Automation Services Team](https://github.com/global-vmware).

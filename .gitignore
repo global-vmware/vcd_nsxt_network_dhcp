@@ -9,6 +9,7 @@ secrets.tfvars
 secrets.auto.tfvars
 terraform.tfvars
 terraform.auto.tfvars
+terraform.auto.tfvars.bak
 providers.tf
 
 # Crash log files

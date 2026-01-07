@@ -55,7 +55,6 @@ module "vcd_nsxt_network_dhcp" {
     "Web-Network" = {
       dhcp_mode   = "EDGE"
       dns_servers = ["192.168.255.228"]
-      lease_time  = 2592000
       pool_ranges = [{
         start_address = "10.0.0.100"
         end_address   = "10.0.0.200"
@@ -78,6 +77,8 @@ module "vcd_nsxt_network_dhcp" {
     "Web-Network" = {
       dhcp_mode           = "NETWORK"
       listener_ip_address = "10.1.0.10"
+      dns_servers         = ["10.1.0.10", "10.1.0.11"]
+      lease_time          = 604800
       pool_ranges = [{
         start_address = "10.1.0.100"
         end_address   = "10.1.0.200"

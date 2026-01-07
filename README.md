@@ -6,7 +6,7 @@ This Terraform module deploys NSX-T DHCP Pools into an existing VMware Cloud Dir
 
 | Name | Version |
 |------|---------|
-| terraform | >= 1.2 |
+| terraform | >= 1.5.7 |
 | vcd | >= 3.8.2 |
 
 ## Resources
@@ -25,54 +25,60 @@ This Terraform module deploys NSX-T DHCP Pools into an existing VMware Cloud Dir
 | vdc_org_name | The name of the Data Center Group Organization in VCD | string | - | yes |
 | vdc_edge_name | Name of the Data Center Group Edge Gateway | string | - | yes |
 | vdc_group_name | The name of the Data Center Group in VCD | string | - | yes |
-| segments | Map of network segments to configure DHCP on | map(object({ gateway = string, prefix_length = number, dns_suffix = string, listener_ip_address = string, pool_ranges = list(map(string)), dns_servers = list(string), dhcp_mode = string, lease_time = number })) | {} | yes |
+| segments | Map of network segments to configure DHCP on. Attributes like `dhcp_mode` (default: "EDGE"), `lease_time` (default: 30 days), and `dns_servers` (default: ["192.168.255.228"]) have defaults. | map(object) | {} | yes |
+
+## Validation Rules
+
+The module includes strict validation based on the `dhcp_mode`:
+- **NETWORK**: Requires `listener_ip_address` and at least one pool in `pool_ranges`.
+- **EDGE**: Requires at least one pool in `pool_ranges`. MUST NOT have `listener_ip_address`.
+- **RELAY**: MUST NOT have `listener_ip_address` or `pool_ranges`.
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| dhcp_pools | The pool ranges, DNS servers, DHCP mode, and listener IP address for each network segment |
+| dhcp_pools | Comprehensive map of deployed DHCP configurations, reading directly from resource attributes. |
 
 ## Example Usage
 
+### Standard Deployment (EDGE Mode)
 ```terraform
 module "vcd_nsxt_network_dhcp" {
-  source = "github.com/global-vmware/vcd_nsxt_network_dhcp.git?ref=v2.0.1"
+  source = "github.com/global-vmware/vcd_nsxt_network_dhcp.git?ref=v2.1.0"
 
   vdc_org_name   = "<VDC-ORG-NAME>"
   vdc_group_name = "<VDC-GRP-NAME>"
   vdc_edge_name  = "<VDC-EDGE-NAME>"
 
   segments = {
-    "US1-Segment-01" = {
-      gateway             = "172.16.0.1"
-      prefix_length       = 24
-      dns_suffix          = "mydomain.com"
-      listener_ip_address = "172.16.0.10"
-      pool_ranges         = [
-        {
-          start_address   = "172.16.0.101"
-          end_address     = "172.16.0.200"
-        }
-      ]
-      dns_servers         = ["192.168.255.228"]
+    "Web-Network" = {
+      pool_ranges = [{
+        start_address = "10.0.0.100"
+        end_address   = "10.0.0.200"
+      }]
+    }
+  }
+}
+```
+
+### Network Specific Deployment (NETWORK Mode)
+```terraform
+module "vcd_nsxt_network_dhcp" {
+  source = "github.com/global-vmware/vcd_nsxt_network_dhcp.git?ref=v2.1.0"
+  
+  vdc_org_name   = "<VDC-ORG-NAME>"
+  vdc_group_name = "<VDC-GRP-NAME>"
+  vdc_edge_name  = "<VDC-EDGE-NAME>"
+
+  segments = {
+    "Isolated-Network" = {
       dhcp_mode           = "NETWORK"
-      lease_time          = 2592000
-    },    
-    "US1-Segment-02" = {
-      gateway             = "172.16.1.1"
-      prefix_length       = 24
-      dns_suffix          = "mydomain.com"
-      listener_ip_address = null
-      pool_ranges         = [
-        {
-          start_address = "172.16.1.101"
-          end_address   = "172.16.1.200"
-        }
-      ]
-      dns_servers         = ["192.168.255.228"]
-      dhcp_mode           = "EDGE"
-      lease_time          = 2592000
+      listener_ip_address = "10.1.0.10"
+      pool_ranges = [{
+        start_address = "10.1.0.100"
+        end_address   = "10.1.0.200"
+      }]
     }
   }
 }
